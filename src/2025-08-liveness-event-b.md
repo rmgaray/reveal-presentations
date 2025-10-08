@@ -27,9 +27,36 @@ theme: simple
 * Actualmente becario PREXI en el LINS
 
 :::
+
 ::::
 
 :::::::
+
+## Agenda
+
+::: notes
+
+Objetivos:
+  1. Aprender que son las props de liveness y porque importan
+  2. como formalizar esto en una lenguaje formal (LTL))
+  3. como formalizar propiedades de liveness en Event-B (que es mas que nada safety)
+     3.1. Que se puede demostrar facilmente? Convergencia.
+     3.2. Como demostrar cosas mas complejas (existencia, persistencia, etc).
+     3.3. Desventajas y ventajas de utilizar SOLO event-b para liveness.
+     3.4. Posibles soluciones (Meta-theory para hablar de trazas)
+  4. Intro a model checking y verificacion de propiedades LTL con ProB
+     4.1. Espacio de estados
+     4.2. Checkeos exhaustivos vs. no exhaustivos
+  5. Bibliografía
+     
+Ejemplo: PingPong? 
+
+:::
+
+1. Intro a propiedades de liveness
+2. Lógica Temporal Lineal (LTL)
+3. **Demostración** de propiedades de liveness
+4. **Verificación** de propiedades de liveness usando _model checking_
 
 # Propiedades de Liveness (Intro)
 

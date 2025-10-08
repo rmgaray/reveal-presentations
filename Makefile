@@ -1,21 +1,15 @@
 MAKEFLAGS += --no-print-directory
+FIFO := inotify.fifo
 
 watch:
-	@rm -f inotify.fifo
-	@mkfifo inotify.fifo
-	@inotifywait -e modify -m src/ > inotify.fifo &
-	@./call_pandoc.sh
+	@./watch.sh
 
 live_watch:
-	@rm -f inotify.fifo
-	@mkfifo inotify.fifo
-	@inotifywait -e modify -m src/ > inotify.fifo &
-	@websocketd -port 8080 --devconsole ./call_pandoc.sh &
-	@miniserve site/ -p 8000
+	@./live_watch.sh
 
-site/html/%.html: src/%.md
-	@pandoc -t revealjs -s $< -o $@ --variable live-reload --template revealjs_template.html
+presentations/%.html: src/%.md
+	@pandoc -t revealjs -s $< -o $@ --variable live-reload --template templates/revealjs_template.html --resource-path site/presentations
 
-pdfs/%.pdf: src/%.md
-	@pandoc -t beamer -s $< -o $@ --metadata theme=default --resource-path site/html
+presentations/%.pdf: src/%.md
+	@pandoc -t beamer -s $< -o $@ --metadata theme=default --resource-path site/presentations
 	

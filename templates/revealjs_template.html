@@ -318,7 +318,7 @@ $endif$
 $-- A second, optional script for live realoding using a WS connection
 $if(live-reload)$
   <script>
-  var ws = new WebSocket('ws://localhost:8080/');
+  var ws = new WebSocket('ws://localhost:8097/');
 
   ws.onmessage = function(event) {
     console.log('Re-compiled sources: ' + event.data);

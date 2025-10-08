@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Ramiro Garay">
+  <title>Modelando propiedades de liveness en Event-B</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4/dist/reset.css">
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4/dist/reveal.css">
+  <style>
+    .reveal .sourceCode {  /* see #7635 */
+      overflow: visible;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4/dist/theme/simple.css" id="theme">
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Modelando propiedades de liveness en Event-B</h1>
+  <p class="author">Ramiro Garay</p>
+  <p class="date">Agosto, 2025</p>
+</section>
+
+<section>
+<section id="antes-de-empezar" class="title-slide slide level1">
+<h1>Antes de empezar…</h1>
+
+</section>
+<section id="sobre-mí" class="slide level2">
+<h2>Sobre mí</h2>
+<div class="columns">
+<div class="column" style="width:25%;">
+<figure>
+<img data-src="../img/new_profile_cropped.png" alt="Ramiro Garay" />
+<figcaption aria-hidden="true">Ramiro Garay</figcaption>
+</figure>
+</div><div class="column" style="width:75%;">
+<ul>
+<li class="fragment">Argentino, ex-estudiante de Ingeniería en
+Informática de la UNL, Santa Fe (2017-2022)</li>
+<li class="fragment">Desarrollador a medio tiempo para MLabs, una
+consultora especializada en Blockchain (2022-)</li>
+<li class="fragment">Estudiante avanzado de Licenciatura en Computación
+(2025-)</li>
+<li class="fragment">Actualmente becario PREXI en el LINS</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="agenda" class="slide level2">
+<h2>Agenda</h2>
+<aside class="notes">
+<p>Objetivos: 1. Aprender que son las props de liveness y porque
+importan 2. como formalizar esto en una lenguaje formal (LTL)) 3. como
+formalizar propiedades de liveness en Event-B (que es mas que nada
+safety) 3.1. Que se puede demostrar facilmente? Convergencia. 3.2. Como
+demostrar cosas mas complejas (existencia, persistencia, etc). 3.3.
+Desventajas y ventajas de utilizar SOLO event-b para liveness. 3.4.
+Posibles soluciones (Meta-theory para hablar de trazas) 4. Intro a model
+checking y verificacion de propiedades LTL con ProB 4.1. Espacio de
+estados 4.2. Checkeos exhaustivos vs. no exhaustivos 5. Bibliografía</p>
+<p>Ejemplo: PingPong?</p>
+</aside>
+<ol type="1">
+<li>Intro a propiedades de liveness</li>
+<li>Lógica Temporal Lineal (LTL)</li>
+<li><strong>Demostración</strong> de propiedades de liveness</li>
+<li><strong>Verificación</strong> de propiedades de liveness usando
+<em>model checking</em></li>
+</ol>
+</section></section>
+<section>
+<section id="propiedades-de-liveness-intro"
+class="title-slide slide level1">
+<h1>Propiedades de Liveness (Intro)</h1>
+
+</section>
+<section id="una-definición-informal" class="slide level2">
+<h2>Una definición informal</h2>
+<p>“Son aquellas propiedades que nos garantizan que el sistema
+eventualmente va a hacer <strong>algo</strong>”</p>
+<div class="fragment">
+<p>Son fundamentales, ya que permiten representar ciertos
+comportamientos dinámicos del sistema.</p>
+</div>
+</section>
+<section id="ejemplo-ascensor-i" class="slide level2">
+<h2>Ejemplo: ascensor (I)</h2>
+<p>Un ascensor debe cumplir propiedades de safety. Por ejemplo:</p>
+<div class="columns">
+<div class="column" style="width:30%;">
+<p><img data-src="../img/ascensor.jpg" /></p>
+</div><div class="column" style="width:70%;">
+<ul>
+<li class="fragment">El ascensor <strong>nunca</strong> se mueve con la
+puerta abierta</li>
+<li class="fragment">El ascensor <strong>nunca</strong> cierra la puerta
+cuando un usuario es detectado en el umbral</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="ejemplo-ascensor-ii" class="slide level2">
+<h2>Ejemplo: ascensor (II)</h2>
+<p>Pero también de liveness!</p>
+<div class="columns">
+<div class="column" style="width:30%;">
+<p><img data-src="../img/ascensor.jpg" /></p>
+</div><div class="column" style="width:70%;">
+<ul>
+<li class="fragment">Si el usuario pide el ascensor,
+<strong>eventualmente</strong> el mismo viaja hacia el piso del
+usuario.</li>
+<li class="fragment">Si el usuario seleccionó un piso,
+<strong>eventualmente</strong> el ascensor va a llegar al piso
+pedido.</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="ejemplo-ascensor-iii" class="slide level2">
+<h2>Ejemplo: ascensor (III)</h2>
+<p>Un ascensor sin propiedades de liveness puede ser muy seguro, pero
+también <strong>inútil</strong>.</p>
+<div class="fragment">
+<p><em>Ejemplo</em>: Un ascensor que se mantiene cerrado e inmóvil
+satisface todas las propiedades de safety pero <strong>ninguna</strong>
+de liveness.</p>
+</div>
+</section></section>
+<section>
+<section id="un-poco-de-ltl" class="title-slide slide level1">
+<h1>Un poco de LTL</h1>
+
+</section>
+<section id="hacia-una-definición-formal" class="slide level2">
+<h2>Hacia una definición formal</h2>
+<p>Para hablar de propiedades de liveness es necesario hablar de
+<em>tiempo</em>.</p>
+<div class="fragment">
+<p>La Lógica Temporal Lineal (LTL) es una extensión de la <em>lógica de
+1er orden</em> que incluye <strong>operadores temporales</strong></p>
+</div>
+<div class="fragment">
+<p>Los operadores temporales de LTL nos permite expresar cosas como
+<strong>siempre</strong>, <strong>después</strong>,
+<strong>eventualmente</strong>, etc.</p>
+<aside class="notes">
+<p>Por lo tanto, una fórmula LTL se ve muy parecida a una fórmula lógica
+de 1er orden: con las conectivas lógicas que ya conocemos (AND, OR, NOT,
+etc.) y variables lógicas que pueden ser TRUE o FALSE.</p>
+</aside>
+</div>
+</section>
+<section id="estructura-de-kripke-i" class="slide level2">
+<h2>Estructura de Kripke (I)</h2>
+<p>La LTL adquiere significado en el contexto de una <strong>estructura
+de Kripke</strong>.</p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<figure>
+<img data-src="../img/ejemplo_automata.png" alt="Máquina de estados" />
+<figcaption aria-hidden="true">Máquina de estados</figcaption>
+</figure>
+</div><div class="column" style="width:50%;">
+<p><img data-src="../img/ejemplo_kripke.png" /></p>
+</div>
+</div>
+<aside class="notes">
+<p>Una estructura de Kripke es una máquina de estados enriquecida con
+una función semántica que hace “labelling”.</p>
+<p>A cada estado de la máquina esta función asigna un sub-conjunto de
+todas las variables lógicas. Este subconjunto nos dice qué variables
+lógicas son verdaderas <strong>en este estado particular</strong>.</p>
+</aside>
+</section>
+<section id="estructura-de-kripke-ii" class="slide level2">
+<h2>Estructura de Kripke (II)</h2>
+<p>La estructura de Kripke tiene asociada un conjunto de
+<strong>trazas</strong>. Por ejemplo:</p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><img data-src="../img/ejemplo_kripke.png" /></p>
+</div><div class="column" style="width:50%;">
+<ul>
+<li class="fragment"><span
+class="math inline"><em>Ω</em> = <em>s</em><sub>1</sub>, <em>s</em><sub>2</sub>, <em>s</em><sub>1</sub>, <em>s</em><sub>2</sub>, <em>s</em><sub>1</sub>, <em>s</em><sub>2</sub>...</span></li>
+<li class="fragment">Una <em>traza</em> es una sucesión de estados
+generada por la maquina <strong>respetando</strong> las restricciones de
+la misma.</li>
+</ul>
+</div>
+</div>
+<aside class="notes">
+<p>¿Qué restricciones? Todas las que queramos. En el caso de Event-B:
+las invariantes que definamos, las pre-condiciones y post-condiciones de
+las transiciones, teoremas, etc.</p>
+</aside>
+</section>
+<section id="ltl-ejemplos-i" class="slide level2">
+<h2>LTL: Ejemplos (I)</h2>
+<p>Las trazas pueden satisfacer o no <strong>una fórmula LTL</strong>
+<span class="math display">(<em>Ω</em> ⊢ <em>ϕ</em>)</span></p>
+<div class="fragment">
+<p>Analizamos la traza:</p>
+<p><span
+class="math display"><em>Ω</em> = <em>s</em><sub>1</sub>, <em>s</em><sub>2</sub>, <em>s</em><sub>1</sub>, <em>s</em><sub>2</sub>, <em>s</em><sub>1</sub>, <em>s</em><sub>2</sub>...</span></p>
+</div>
+</section>
+<section id="ltl-ejemplos-ii" class="slide level2">
+<h2>LTL: Ejemplos (II)</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><img data-src="../img/ejemplo_kripke.png" /></p>
+</div><div class="column" style="width:50%;">
+<ul>
+<li class="fragment"><em>Variables lógicas / proposiciones con
+conectivas lógicas</em>
+<ul>
+<li class="fragment"><span
+class="math display"><em>Ω</em> ⊢ <em>p</em></span></li>
+<li class="fragment"><span
+class="math display"><em>Ω</em> ⊢ ¬<em>q</em></span></li>
+</ul></li>
+<li class="fragment"><em><strong>Operadores temporales</strong></em>
+<ul>
+<li class="fragment"><span
+class="math display"><em>Ω</em> ⊢ ∘<em>q</em></span></li>
+<li class="fragment"><span
+class="math display"><em>Ω</em> ⊢ ▫(<em>p</em> ∨ <em>q</em>)</span></li>
+<li class="fragment">…</li>
+</ul></li>
+</ul>
+<aside class="notes">
+<p>Aclarar que cualquier fórmula lógica puede ir a la derecha. Sin
+operadores temporales, la misma debe ser cierta solo en el primer estado
+del camino.</p>
+</aside>
+</div>
+</div>
+</section>
+<section id="ltl-ejemplos-iii" class="slide level2">
+<h2>LTL: Ejemplos (III)</h2>
+<p>Otro ejemplo (<strong>finito</strong>):</p>
+<p><span
+class="math display"><em>Γ</em> = <em>s</em><sub>1</sub>, <em>s</em><sub>2</sub>, <em>s</em><sub>1</sub>, <em>s</em><sub>2</sub>, <em>s</em><sub>3</sub></span></p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><img data-src="../img/ejemplo_kripke.png" /></p>
+</div><div class="column" style="width:50%;">
+<p><span class="math inline"><em>Γ</em></span> satisface las mismas
+propiedades que antes, pero también:</p>
+<ul>
+<li><span
+class="math display"><em>Γ</em> ⊢ ◊(<em>p</em> ∧ <em>q</em>)</span></li>
+</ul>
+</div>
+</div>
+</section></section>
+<section>
+<section id="propiedades-de-liveness-en-ltl"
+class="title-slide slide level1">
+<h1>Propiedades de Liveness (en LTL)</h1>
+
+</section>
+<section id="existencia-de-p-definición" class="slide level2">
+<h2>Existencia de <span class="math inline"><em>P</em></span>
+(Definición)</h2>
+<p>“<em><strong>Siempre</strong> es cierto que,
+<strong>eventualmente</strong> P es verdadero</em>”</p>
+<div class="fragment">
+<p>En LTL:</p>
+<p><span class="math inline">▫◊<em>P</em></span></p>
+</div>
+</section>
+<section id="existencia-de-p-demostración" class="slide level2">
+<h2>Existencia de <span class="math inline"><em>P</em></span>
+(Demostración)</h2>
+<p>Por medio de dos propiedades auxiliares:</p>
+<ol type="1">
+<li><strong>Convergencia en <span
+class="math inline">¬<em>P</em></span></strong></li>
+<li><strong><span class="math inline">¬<em>P</em></span> es libre de
+deadlocks</strong></li>
+</ol>
+<div class="fragment">
+<p><img data-src="../img/son_hoang_2014_existence_proof_rule.png" /></p>
+</div>
+</section>
+<section id="persistencia-de-p-definición" class="slide level2">
+<h2>Persistencia de <span class="math inline"><em>P</em></span>
+(Definición)</h2>
+<p>“<em><strong>Eventualmente</strong> es cierto que,
+<strong>siempre</strong> P es verdadero</em>”</p>
+<div class="fragment">
+<p>En LTL:</p>
+<p><span class="math inline">◊▫<em>P</em></span></p>
+</div>
+</section>
+<section id="persistencia-de-p-demostración" class="slide level2">
+<h2>Persistencia de <span class="math inline"><em>P</em></span>
+(Demostración)</h2>
+<p>Por medio de dos propiedades auxiliares:</p>
+<ol type="1">
+<li><strong>Divergencia en <span
+class="math inline"><em>P</em></span></strong></li>
+<li><strong><span class="math inline">¬<em>P</em></span> es libre de
+deadlocks</strong></li>
+</ol>
+<div class="fragment">
+<p><img
+data-src="../img/son_hoang_2014_persistence_proof_rule.png" /></p>
+</div>
+</section>
+<section id="progreso-de-p_1-a-p_2-definición" class="slide level2">
+<h2>Progreso de <span class="math inline"><em>P</em><sub>1</sub></span>
+a <span class="math inline"><em>P</em><sub>2</sub></span>
+(Definición)</h2>
+<p>“<em><strong>Siempre</strong> es cierto que, si <span
+class="math inline"><em>P</em><sub>1</sub></span> es verdadero,
+<strong>eventualmente</strong> <span
+class="math inline"><em>P</em><sub>2</sub></span> lo va a ser</em>”</p>
+<div class="fragment">
+<p>En LTL:</p>
+<p><span
+class="math inline">▫(<em>P</em><sub>1</sub> ⟹ ◊<em>P</em><sub>2</sub>)</span></p>
+</div>
+</section>
+<section id="progreso-de-p_1-a-p_2-demostración" class="slide level2">
+<h2>Progreso de <span class="math inline"><em>P</em><sub>1</sub></span>
+a <span class="math inline"><em>P</em><sub>2</sub></span>
+(Demostración)</h2>
+<p>Por medio de varias propiedades auxiliares (no tan simples).</p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><img data-src="../img/son_hoang_2014_progress_proof_rule.png" /></p>
+</div><div class="column" style="width:50%;">
+<p><img data-src="../img/son_hoang_2014_until_proof_rule.png" /></p>
+</div>
+</div>
+</section></section>
+<section>
+<section id="propiedades-auxiliares" class="title-slide slide level1">
+<h1>Propiedades auxiliares</h1>
+
+</section>
+<section id="convergencia-de-un-evento-i" class="slide level2">
+<h2>Convergencia de un evento (I)</h2>
+<p>Esta propiedad de liveness <strong>sí</strong> se puede representar
+en el lenguaje de Event-B.</p>
+<p><em>“Si un evento convergente está activado, entonces eventualmente
+va a dejar de estarlo”</em></p>
+<p>Para marcar un evento como convergente, se lo marca con la palabra
+clave <code>convergent</code>.</p>
+<p>Adicionalmente, al modelo se le debe agregar una
+<em>variante</em>.</p>
+</section>
+<section id="convergencia-de-un-evento-ii" class="slide level2">
+<h2>Convergencia de un evento (II)</h2>
+<p>La variante es un número que satisface las siguientes
+condiciones:</p>
+<ol type="1">
+<li>Cuando el evento está activo, <strong>la variante es un número
+natural</strong>.</li>
+<li>Cuando el evento se ejecuta, <strong>la variante
+disminuye</strong>.</li>
+</ol>
+<div class="fragment">
+<p>Intuitivamente, esto implica que cuando la variante deje de ser
+natural, el evento <strong>ya no va a estar activo</strong> (<em>Modus
+tollens</em> en proposición 1).</p>
+</div>
+<div class="fragment">
+<p>Así mísmo, la variantes <strong>debe</strong> dejar de ser natural,
+ya que el evento disminuye la variante con cada ejecución.</p>
+</div>
+</section>
+<section id="convergencia-de-un-evento-iii" class="slide level2">
+<h2>Convergencia de un evento (III)</h2>
+<p>Cuando varios eventos son convergentes, la elección de la variante se
+complica.</p>
+<p>¿Por qué? Porque Event-B permite <strong>solo una variante por
+modelo</strong>.</p>
+<p>La solución para este problema es combinar las variantes de cada
+evento convergente en una única <em>variante lexicográfica</em>.</p>
+<div class="fragment">
+<p>(TODO: mostrar Variante en modelo PingPongEnd)</p>
+</div>
+</section>
+<section id="convergencia-en-p" class="slide level2">
+<h2>Convergencia en P</h2>
+<p>TODO</p>
+</section>
+<section id="divergencia" class="slide level2">
+<h2>Divergencia</h2>
+<p>TODO</p>
+</section>
+<section id="transiciona-de-p_1-a-p_2" class="slide level2">
+<h2>Transiciona de <span
+class="math inline"><em>P</em><sub>1</sub></span> a <span
+class="math inline"><em>P</em><sub>2</sub></span></h2>
+<p>TODO</p>
+</section></section>
+<section>
+<section id="verificación-en-prob" class="title-slide slide level1">
+<h1>Verificación en ProB</h1>
+
+</section>
+<section id="model-check-i" class="slide level2">
+<h2>“Model check” (I)</h2>
+<p>Esta funcionalidad explora lo máximo posible el espacio de estados
+del modelo para encontrar <em>violaciones de invariantes/teoremas</em> y
+<em>deadlocks</em>.</p>
+<p>Es útil para verificar que el modelo cumple con las variantes
+<strong>antes de demostrarlo</strong>.</p>
+<p>(TODO: Mostrar espacio de estados generado por ProB)</p>
+</section>
+<section id="model-check-ii" class="slide level2">
+<h2>“Model check” (II)</h2>
+<p>Hay dos casos donde el model check no es exhaustivo:</p>
+<ul>
+<li><strong>No se exploró el espacio de estados completo</strong></li>
+<li><strong>No se exploraron todos los eventos posibles</strong></li>
+</ul>
+<p>Ambos se pueden remediar aumentando los valores de las constantes
+<code>MAX_INITIALIZATIONS</code> y <code>MAX_OPERATIONS</code> y
+<strong>acotando las constantes del modelo</strong> (fundamental).</p>
+</section>
+<section id="model-check-iii" class="slide level2">
+<h2>“Model check” (III)</h2>
+<p>El <em>model checking</em> nos permite <strong>sólo
+verificar</strong>, no demostrar.</p>
+<p>En el mejor de los casos (cuando el chequeo es exhaustivo), nos
+permite <strong>demostrar</strong> las propiedades deseadas en un modelo
+más pequeño que el “real”.</p>
+</section>
+<section id="ltl-checking-i" class="slide level2">
+<h2>LTL checking (I)</h2>
+<p>Esta funcionalidad nos permite escribir fórmulas LTL que son
+verificadas por ProB.</p>
+<p>ProB soporta todos los operadores temporales e incluso algunos
+operadores específico a B/Event-B que facilitan la escritura de
+propiedades útiles.</p>
+</section>
+<section id="ltl-checking-ii" class="slide level2">
+<h2>LTL checking (II)</h2>
+<p>Las propiedades de liveness se pueden escribir del siguiente
+modo:</p>
+<pre><code>G F ({is_pinging = 1}))
+G F ({is_pinging = 0}))
+F G ({runs_counter = RUNS_LIMIT})
+G (e(ping) =&gt; F (e(pong)))</code></pre>
+<p>Donde <code>e(&lt;evento&gt;)</code> es la <em>guarda del evento en
+cuestión</em> (i.e: el evento está activado).</p>
+</section></section>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/reveal.js@^4/dist/reveal.js"></script>
+
+  <!-- reveal.js plugins -->
+  <script src="https://unpkg.com/reveal.js@^4/plugin/notes/notes.js"></script>
+  <script src="https://unpkg.com/reveal.js@^4/plugin/search/search.js"></script>
+  <script src="https://unpkg.com/reveal.js@^4/plugin/zoom/zoom.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+        // Display controls in the bottom right corner
+        controls: true,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: true,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'bottom-right',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: false,
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: false,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: true,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'default',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: true,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'slide',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'fade',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // reveal.js plugins
+        plugins: [
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+
+  <script>
+  var ws = new WebSocket('ws://localhost:8097/');
+
+  ws.onmessage = function(event) {
+    console.log('Re-compiled sources: ' + event.data);
+    console.log('Reloading web page');
+    window.location.reload();
+  };
+  </script>
+
+    </body>
+</html>

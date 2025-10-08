@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 # Call make whenever a line is read
-while IFS= read -r line; do
-  make --silent site/html/*
+set -euo pipefail
+
+FIFO=inotify.fifo
+
+while IFS= read -r _; do
+  make --silent presentations/*
   echo "reload"
-done <inotify.fifo
+done < "${FIFO}"
