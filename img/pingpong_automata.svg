@@ -1,0 +1,414 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="735.6944"
+   height="399.07343"
+   viewBox="0 0 194.65247 105.58819"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.4.2 (ebf0e940d0, 2025-05-08)"
+   sodipodi:docname="pingpong_automata.svg"
+   inkscape:export-filename="pingpong1_automata.png"
+   inkscape:export-xdpi="184.31418"
+   inkscape:export-ydpi="184.31418"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     showgrid="true"
+     inkscape:zoom="1.4142136"
+     inkscape:cx="336.22927"
+     inkscape:cy="171.47339"
+     inkscape:window-width="1920"
+     inkscape:window-height="1128"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1"
+     showguides="false">
+    <inkscape:grid
+       id="grid1"
+       units="mm"
+       originx="-2.7020976"
+       originy="-7.1472614"
+       spacingx="0.99999995"
+       spacingy="1"
+       empcolor="#0099e5"
+       empopacity="0.30196078"
+       color="#0099e5"
+       opacity="0.14901961"
+       empspacing="5"
+       enabled="true"
+       visible="true" />
+  </sodipodi:namedview>
+  <defs
+     id="defs1">
+    <marker
+       style="overflow:visible"
+       id="DartArrow"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       inkscape:stockid="Dart arrow"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         style="fill:context-stroke;fill-rule:evenodd;stroke:none"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         transform="scale(-0.5)"
+         id="path6" />
+    </marker>
+  </defs>
+  <g
+     inkscape:label="Automata"
+     inkscape:groupmode="layer"
+     id="g13"
+     style="display:inline"
+     transform="translate(-2.7020979,-7.1472602)">
+    <g
+       id="g25"
+       inkscape:label="pinging">
+      <ellipse
+         style="fill:#fff6d5;stroke:#000000;stroke-width:0.534792;stroke-dasharray:none"
+         id="ellipse4"
+         cx="20.91375"
+         cy="27.328989"
+         rx="17.944256"
+         ry="17.350531" />
+      <text
+         xml:space="preserve"
+         style="font-style:oblique;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.93889px;font-family:FreeMono;-inkscape-font-specification:'FreeMono Oblique';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#fff6d5;stroke:#000000;stroke-width:0.392247;stroke-dasharray:none"
+         x="10.458112"
+         y="28.410604"
+         id="text6"><tspan
+           sodipodi:role="line"
+           style="font-style:oblique;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.93889px;font-family:FreeMono;-inkscape-font-specification:'FreeMono Oblique';stroke-width:0.392248"
+           x="10.458112"
+           y="28.410604"
+           id="tspan6">pinging</tspan></text>
+    </g>
+    <g
+       id="g26"
+       inkscape:label="ponging">
+      <ellipse
+         style="fill:#fff6d5;stroke:#000000;stroke-width:0.534792;stroke-dasharray:none"
+         id="ellipse8"
+         cx="87.92395"
+         cy="95.035881"
+         rx="17.944256"
+         ry="17.350531" />
+      <text
+         xml:space="preserve"
+         style="font-style:oblique;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.93889px;font-family:FreeMono;-inkscape-font-specification:'FreeMono Oblique';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#fff6d5;stroke:#000000;stroke-width:0.392247;stroke-dasharray:none"
+         x="77.468315"
+         y="96.1175"
+         id="text9"><tspan
+           sodipodi:role="line"
+           style="font-style:oblique;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.93889px;font-family:FreeMono;-inkscape-font-specification:'FreeMono Oblique';stroke-width:0.392248"
+           x="77.468315"
+           y="96.1175"
+           id="tspan9">ponging</tspan></text>
+    </g>
+    <g
+       id="g27"
+       inkscape:label="transiciones">
+      <path
+         style="fill:none;stroke:#000000;stroke-width:0.543999;stroke-dasharray:none;stroke-dashoffset:0;marker-end:url(#DartArrow)"
+         d="M 37.942024,20.30645 C 62.942023,5.3064512 103.77535,53.332773 94.712617,75.246931"
+         id="path10"
+         sodipodi:nodetypes="cc" />
+      <path
+         style="fill:none;stroke:#000000;stroke-width:0.543999;stroke-dasharray:none;stroke-dashoffset:0;marker-end:url(#DartArrow)"
+         d="M 73.574405,84.475545 C 51.931501,72.984848 76.408308,52.916667 80.374175,78.225858"
+         id="path12"
+         sodipodi:nodetypes="cc" />
+      <path
+         style="fill:none;stroke:#000000;stroke-width:0.543999;stroke-dasharray:none;stroke-dashoffset:0;marker-end:url(#DartArrow)"
+         d="m 34.897472,38.542251 c 21.642904,11.490697 -2.833903,31.558878 -6.79977,6.249687"
+         id="path13"
+         sodipodi:nodetypes="cc" />
+      <path
+         style="fill:none;stroke:#000000;stroke-width:0.543999;stroke-dasharray:none;stroke-dashoffset:0;marker-end:url(#DartArrow)"
+         d="M 70.905125,102.71135 C 45.905126,117.71134 5.0717936,69.685023 14.134532,47.770865"
+         id="path14"
+         sodipodi:nodetypes="cc" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.35px;font-family:'Noto Sans Math';-inkscape-font-specification:'Noto Sans Math';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#ff0000;stroke:#ff0000;stroke-width:0.543999"
+         x="29.999998"
+         y="62.487614"
+         id="text14"><tspan
+           sodipodi:role="line"
+           id="tspan14"
+           style="stroke-width:0.544"
+           x="29.999998"
+           y="62.487614" /></text>
+      <text
+         xml:space="preserve"
+         style="font-style:oblique;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.99722px;font-family:FreeMono;-inkscape-font-specification:'FreeMono Oblique';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:none;stroke:#000000;stroke-width:0.543999"
+         x="40.609581"
+         y="37.04356"
+         id="text15"><tspan
+           sodipodi:role="line"
+           id="tspan15"
+           style="font-size:5.99722px;fill:none;stroke:#000000;stroke-width:0.544"
+           x="40.609581"
+           y="37.04356">ping</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-style:oblique;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.99722px;font-family:FreeMono;-inkscape-font-specification:'FreeMono Oblique';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:none;stroke:#000000;stroke-width:0.543999"
+         x="52.198391"
+         y="86.809151"
+         id="text16"><tspan
+           sodipodi:role="line"
+           id="tspan16"
+           style="font-size:5.99722px;fill:none;stroke:#000000;stroke-width:0.544"
+           x="52.198391"
+           y="86.809151">pong</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-style:oblique;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.99722px;font-family:FreeMono;-inkscape-font-specification:'FreeMono Oblique';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:none;stroke:#000000;stroke-width:0.543999"
+         x="49.138367"
+         y="12.302903"
+         id="text17"><tspan
+           sodipodi:role="line"
+           id="tspan17"
+           style="font-size:5.99722px;fill:none;stroke:#000000;stroke-width:0.544"
+           x="49.138367"
+           y="12.302903">start_pong</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-style:oblique;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.99722px;font-family:FreeMono;-inkscape-font-specification:'FreeMono Oblique';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:none;stroke:#000000;stroke-width:0.543999"
+         x="13.948122"
+         y="111.34796"
+         id="text18"><tspan
+           sodipodi:role="line"
+           id="tspan18"
+           style="font-size:5.99722px;fill:none;stroke:#000000;stroke-width:0.544"
+           x="13.948122"
+           y="111.34796">start_ping</tspan></text>
+    </g>
+    <g
+       id="g16"
+       inkscape:label="Contexto">
+      <rect
+         style="fill:#ff9955;stroke:none;stroke-width:0.762235"
+         id="rect5"
+         width="62.354572"
+         height="17.855253"
+         x="135"
+         y="7.1472602"
+         inkscape:label="Fondo" />
+      <text
+         xml:space="preserve"
+         style="font-style:oblique;font-size:4.9389px;font-family:FreeMono;-inkscape-font-specification:'FreeMono Oblique';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#000000;stroke:none;stroke-width:0.543999"
+         x="137.90976"
+         y="17.490166"
+         id="text4"
+         inkscape:label="Constantes"><tspan
+           sodipodi:role="line"
+           id="tspan4"
+           style="fill:#000000;stroke:none;stroke-width:0.544"
+           x="137.90976"
+           y="17.490166">LIMIT ∈ N</tspan><tspan
+           sodipodi:role="line"
+           style="fill:#000000;stroke:none;stroke-width:0.544"
+           x="137.90976"
+           y="23.663792"
+           id="tspan8" /><tspan
+           sodipodi:role="line"
+           style="fill:#000000;stroke:none;stroke-width:0.544"
+           x="137.90976"
+           y="29.837416"
+           id="tspan7" /></text>
+      <text
+         xml:space="preserve"
+         style="font-style:oblique;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:4.9389px;font-family:FreeMono;-inkscape-font-specification:'FreeMono Bold Oblique';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#000000;stroke:none;stroke-width:0.543999"
+         x="135"
+         y="12.372403"
+         id="text5"
+         inkscape:label="Titulo"><tspan
+           sodipodi:role="line"
+           id="tspan5"
+           style="font-style:oblique;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:FreeMono;-inkscape-font-specification:'FreeMono Bold Oblique';fill:#000000;stroke:none;stroke-width:0.544"
+           x="135"
+           y="12.372403">Context:</tspan></text>
+    </g>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.543999;stroke-dasharray:none;stroke-dashoffset:0;marker-end:url(#DartArrow)"
+       d="m 128.47884,95.06926 -19.34057,-0.0359"
+       id="path1"
+       sodipodi:nodetypes="cc" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="Variables"
+     style="display:none">
+    <g
+       id="g15"
+       inkscape:label="Variables"
+       style="display:inline"
+       transform="translate(-2.7020978,-7.1472605)">
+      <rect
+         style="fill:#ff00ff;stroke:none;stroke-width:0.762235"
+         id="rect1"
+         width="62.354568"
+         height="19.99748"
+         x="135"
+         y="25.002514"
+         inkscape:label="Fondo" />
+      <text
+         xml:space="preserve"
+         style="font-style:oblique;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:4.9389px;font-family:FreeMono;-inkscape-font-specification:'FreeMono Bold Oblique';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#000000;stroke:none;stroke-width:0.543999"
+         x="135"
+         y="29.648979"
+         id="text1"
+         inkscape:label="Titulo"><tspan
+           sodipodi:role="line"
+           id="tspan1"
+           style="font-style:oblique;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:FreeMono;-inkscape-font-specification:'FreeMono Bold Oblique';fill:#000000;stroke:none;stroke-width:0.544"
+           x="135"
+           y="29.648979">Variables:</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-style:oblique;font-size:4.9389px;font-family:FreeMono;-inkscape-font-specification:'FreeMono Oblique';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#000000;stroke:none;stroke-width:0.543999"
+         x="137.76654"
+         y="34.999996"
+         id="text2"
+         inkscape:label="Variables"><tspan
+           sodipodi:role="line"
+           style="fill:#000000;stroke:none;stroke-width:0.544"
+           x="137.76654"
+           y="34.999996"
+           id="tspan3">is_pinging ∈ {0,1}</tspan><tspan
+           sodipodi:role="line"
+           style="fill:#000000;stroke:none;stroke-width:0.544"
+           x="137.76654"
+           y="41.173622"
+           id="tspan10">counter ∈ [0,LIMIT]</tspan></text>
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-style:oblique;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.9389px;font-family:FreeMono;-inkscape-font-specification:'FreeMono Oblique';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#ff00ff;stroke:none;stroke-width:0.543999"
+       x="110.93548"
+       y="94.5868"
+       id="text30"><tspan
+         sodipodi:role="line"
+         id="tspan30"
+         style="fill:#ff00ff;stroke-width:0.544"
+         x="110.93548"
+         y="94.5868">counter = 0</tspan></text>
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer1"
+     inkscape:label="Proposiciones"
+     style="display:none">
+    <g
+       id="g14"
+       transform="translate(22.297898,-12.14726)"
+       style="display:inline"
+       inkscape:label="Props">
+      <rect
+         style="fill:#ffff00;stroke:none;stroke-width:0.747705"
+         id="rect10"
+         width="62.354572"
+         height="44.736023"
+         x="110"
+         y="50.00251"
+         inkscape:label="Fondo" />
+      <text
+         xml:space="preserve"
+         style="font-style:oblique;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:4.9389px;font-family:FreeMono;-inkscape-font-specification:'FreeMono Bold Oblique';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#000000;stroke:none;stroke-width:0.543999"
+         x="110.27369"
+         y="54.648975"
+         id="text11"
+         inkscape:label="Titulo"><tspan
+           sodipodi:role="line"
+           id="tspan11"
+           style="font-style:oblique;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:FreeMono;-inkscape-font-specification:'FreeMono Bold Oblique';fill:#000000;stroke:none;stroke-width:0.544"
+           x="110.27369"
+           y="54.648975">Proposiciones:</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-style:oblique;font-size:4.9389px;font-family:FreeMono;-inkscape-font-specification:'FreeMono Oblique';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#000000;stroke:none;stroke-width:0.543999"
+         x="113.30488"
+         y="59.999992"
+         id="text13"
+         inkscape:label="Props"><tspan
+           sodipodi:role="line"
+           style="fill:#000000;stroke:none;stroke-width:0.544"
+           x="113.30488"
+           y="59.999992"
+           id="tspan12">p : is_pinging = 1</tspan><tspan
+           sodipodi:role="line"
+           style="fill:#000000;stroke:none;stroke-width:0.544"
+           x="113.30488"
+           y="66.173615"
+           id="tspan13">¬p: is_pinging = 0</tspan><tspan
+           sodipodi:role="line"
+           style="fill:#000000;stroke:none;stroke-width:0.544"
+           x="113.30488"
+           y="72.347244"
+           id="tspan19">l : counter = 0</tspan><tspan
+           sodipodi:role="line"
+           style="fill:#000000;stroke:none;stroke-width:0.544"
+           x="113.30488"
+           y="78.520866"
+           id="tspan20">h : counter = LIMIT</tspan><tspan
+           sodipodi:role="line"
+           style="fill:#000000;stroke:none;stroke-width:0.544"
+           x="113.30488"
+           y="84.694489"
+           id="tspan23">m : 0 &lt; counter</tspan><tspan
+           sodipodi:role="line"
+           style="fill:#000000;stroke:none;stroke-width:0.544"
+           x="113.30488"
+           y="90.868118"
+           id="tspan25">      &lt; LIMIT</tspan><tspan
+           sodipodi:role="line"
+           style="fill:#000000;stroke:none;stroke-width:0.544"
+           x="113.30488"
+           y="97.04174"
+           id="tspan21" /></text>
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-style:oblique;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.9389px;font-family:FreeMono;-inkscape-font-specification:'FreeMono Oblique';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#ff0000;stroke:none;stroke-width:0.543999"
+       x="13.514757"
+       y="27.853994"
+       id="text27"><tspan
+         sodipodi:role="line"
+         id="tspan27"
+         style="fill:#ff0000;stroke-width:0.544"
+         x="13.514757"
+         y="27.853994">{p}</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:oblique;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.9389px;font-family:FreeMono;-inkscape-font-specification:'FreeMono Oblique';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#ff0000;stroke:none;stroke-width:0.543999"
+       x="79.043289"
+       y="95.70298"
+       id="text28"><tspan
+         sodipodi:role="line"
+         id="tspan28"
+         style="fill:#ff0000;stroke-width:0.544"
+         x="79.043289"
+         y="95.70298">{¬p}</tspan></text>
+  </g>
+</svg>

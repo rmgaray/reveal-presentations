@@ -37,14 +37,15 @@ theme: simple
 ::: notes
 
 Objetivos:
-  1. Aprender que son las props de liveness y porque importan
-  2. como formalizar esto en una lenguaje formal (LTL))
+  1. Aprender que son las props de liveness y por qué importan
+  2. Como formalizar esto en una lenguaje formal (LTL))
   3. como formalizar propiedades de liveness en Event-B (que es mas que nada safety)
      3.1. Que se puede demostrar facilmente? Convergencia.
      3.2. Como demostrar cosas mas complejas (existencia, persistencia, etc).
      3.3. Desventajas y ventajas de utilizar SOLO event-b para liveness.
      3.4. Posibles soluciones (Meta-theory para hablar de trazas)
   4. Intro a model checking y verificacion de propiedades LTL con ProB
+     4.1
      4.1. Espacio de estados
      4.2. Checkeos exhaustivos vs. no exhaustivos
   5. Bibliografía
@@ -53,10 +54,14 @@ Ejemplo: PingPong?
 
 :::
 
-1. Intro a propiedades de liveness
-2. Lógica Temporal Lineal (LTL)
-3. **Demostración** de propiedades de liveness
+::: incremental
+
+1. Intro. propiedades de liveness
+2. _Lógica Temporal Lineal (LTL)_
+3. **Demostración** de propiedades de liveness (sólo existencia)
 4. **Verificación** de propiedades de liveness usando _model checking_
+
+:::
 
 # Propiedades de Liveness (Intro)
 
@@ -113,21 +118,60 @@ Un ascensor sin propiedades de liveness puede ser muy seguro, pero también **in
 _Ejemplo_: Un ascensor que se mantiene cerrado e inmóvil satisface todas las
 propiedades de safety pero **ninguna**  de liveness.
 
+## "Completitud" de propiedades de _safety_ y _liveness_
+
+::: notes
+
+NOTA IMPORTANTE:
+
+Una característica de las propiedades de safety es que, una vez violadas,
+son irremediables (ej: una vez que el ascensor cerró la puerta con un usuario entrando,
+es más que suficiente para decir que es inseguro).
+
+Las propiedades de liveness, en cambio, no. Porque solo aseguran que algo ocurrirá
+eventualmente (ej: un ascensor puede tardar mucho en venir, pero siempre que eventualmente
+lo haga, va a satisfacer la propiedad de liveness).
+
+Pregunta: ¿como logramos que el ascensor venga siempre, pero con un limite de tiempo?
+RTA: Safety + Liveness
+
+:::
+
+::: incremental
+
+* Usando propiedades de safety y liveness, uno puede especificar **completamente**
+  un sistema. [^1]
+
+* O al revés: toda propiedad es de safety, liveness o una combinación de ambas.
+
+:::
+
+## Ejemplos de propiedades de liveness
+
+::: notes
+
+Algunos ejemplos reales y relevantes para computación distribuida.
+
+:::
+
+::: incremental
+
+1. _Starvation freedom_: un proceso hace progreso infinitamente seguido
+2. _Termination_: el proceso finaliza
+3. _Guaranteed service_: cada solicitud es satisfecha eventualmente
+
+:::
+
 # Un poco de LTL
 
 ## Hacia una definición formal
 
-Para hablar de propiedades de liveness es necesario hablar de _tiempo_.
+Para definir formalmente propiedades de liveness es necesario hablar de _tiempo_.
 
 . . .
 
 La Lógica Temporal Lineal (LTL) es una extensión de la _lógica de 1er orden_
-que incluye **operadores temporales**
-
-. . .
-
-Los operadores temporales de LTL nos permite expresar cosas como **siempre**,
-**después**, **eventualmente**, etc.
+que incluye **operadores temporales**.
 
 ::: notes
 
@@ -137,44 +181,95 @@ que pueden ser TRUE o FALSE.
 
 :::
 
-## Estructura de Kripke (I)
+. . .
 
-La LTL adquiere significado en el contexto de una **estructura de Kripke**.
+Los operadores temporales de LTL nos permite expresar cosas como **siempre**,
+**después**, **eventualmente**, etc.
+
+## Hacia una definición formal
+
+Al igual que la lógica de 1er orden, LTL se puede analizar desde dos puntos de vista:
+
+. . .
+
+::: incremental
+
+1. La _sintaxis_ (cómo se construyen las fórmulas lógicas)
+2. La _semántica_ (cuándo se satisfacen las fórmulas)
+
+:::
+
+. . .
+
+Empezamos por la semántica.
+
+::: notes
+
+Recordemos que en lógica de 1er orden, una fórmula con variables es satisfecha
+por una _asignación_ de variables particular.
+
+:::
+
+## Estructura de Kripke
+
+La semántica de LTL requiere de una estructura auxiliar llamada  **estructura de Kripke**.
 
 :::::: {.columns}
 :::: {.column width="50%"}
 ![Máquina de estados](../img/ejemplo_automata.png)
 ::::
 :::: {.column width="50%"}
-![](../img/ejemplo_kripke.png)
+![Estructura de Kripke](../img/ejemplo_kripke.png)
 ::::
 ::::::
 
+⇒ Donde $p(s)$ y $q(s)$ son predicados definidos sobre el estado de la máquina
+
 ::: notes
 
-Una estructura de Kripke es una máquina de estados enriquecida con una función
-semántica que hace "labelling".
+Una estructura de Kripke es una máquina de estados enriquecida con proposiciones
+lógicas (de 1er orden!).
 
-A cada estado de la máquina esta función asigna un sub-conjunto de todas las
-variables lógicas. Este subconjunto nos dice qué variables lógicas son
-verdaderas **en este estado particular**.
+En cada estado de la máquina tenemos en rojo _cuáles_ proposiciones son verdaderas.
+
+Nótese que esta máquina de estados puede modelarse en Event-B fácilmente (¿cómo?)
 
 :::
 
-## Estructura de Kripke (II)
+## Traza de una máquina
 
-La estructura de Kripke tiene asociada un conjunto de **trazas**. Por ejemplo:
+Una máquina de estados tiene asociada un conjunto de **trazas**.
+
+Una traza es una sucesión (posiblemente infinita!) de estados. Estos
+se obtienen de ejecutar la máquina **respetando las restricciones**.
+
+. . .
 
 :::::: {.columns}
 ::::: {.column width="50%"}
-![](../img/ejemplo_kripke.png)
+![Máquina de estados](../img/ejemplo_automata.png)
 :::::
 ::::: {.column width="50%"}
 ::: incremental
 * $\Omega = s_1, s_2, s_1, s_2, s_1, s_2 ...$
-* Una _traza_ es una sucesión de estados generada por la maquina **respetando** las
-  restricciones de la misma.
+* $\Gamma = s_1, s_2, s_1, s_2, s_3$
 :::
+:::::
+::::::
+
+* * *
+
+¿Qué restricciones? En Event-B:
+
+1. Invariantes del modelo
+2. Pre- y post-condiciones de cada evento
+
+:::::: {.columns}
+::::: {.column width="50%"}
+![Invariantes](../img/pingpong_invariantes.png)
+:::::
+::::: {.column width="50%"}
+![Pre- y post-condiciones](../img/pingpong_guarda.png)
 :::::
 ::::::
 
@@ -185,22 +280,54 @@ que definamos, las pre-condiciones y post-condiciones de las transiciones, teore
 
 :::
 
-## LTL: Ejemplos (I)
+## Traza de una máquina
 
-Las trazas pueden satisfacer o no **una fórmula LTL**
+Por lo tanto, la estructura de Kripke también tiene una traza.
+
+:::::: {.columns}
+::::: {.column width="50%"}
+![Estructura de Kripke](../img/ejemplo_kripke.png)
+:::::
+::::: {.column width="50%"}
+::: incremental
+* Pero además podemos hablar de **cómo las proposiciones de nuestra estructura cambian con el tiempo.**
+* Trazas:
+    + $\Omega = s_1, s_2, s_1, s_2, s_1, s_2 ...$
+    + $\Gamma = s_1, s_2, s_1, s_2, s_3$
+* "Palabras":
+    + $w_1 = \lbrace p \rbrace, \lbrace q \rbrace, \lbrace p \rbrace, \lbrace q \rbrace, \lbrace p \rbrace, \lbrace q \rbrace ...$
+    + $w_2 = \lbrace p \rbrace, \lbrace q \rbrace, \lbrace p \rbrace, \lbrace q \rbrace, \lbrace p, q \rbrace$
+* Esto es muy **potente**.
+:::
+:::::
+::::::
+
+## Fórmulas lógicas y su semántica
+
+Ahora que conocemos las estructuras de Kripke, podemos ver cómo
+se definen fórmulas LTL en base a ellas.
+
+. . .
+
+Lo haremos por medio de ejemplos
+
+## LTL: Ejemplos (1)
+
+La traza de una estructura de Kripke pueden satisfacer o no **una fórmula LTL**
 $$(\Omega \vdash \phi)$$
 
 . . .
 
-Analizamos la traza:
+Empezamos con la traza:
 
 $$ \Omega = s_1, s_2, s_1, s_2, s_1, s_2 ... $$
 
-## LTL: Ejemplos (II)
+## LTL: Ejemplos (1)
 
 :::::: {.columns}
 ::::: {.column width="50%"}
 ![](../img/ejemplo_kripke.png)
+$$ \Omega = s_1, s_2, s_1, s_2, s_1, s_2 ... $$
 :::::
 ::::: {.column width="50%"}
 
@@ -209,8 +336,8 @@ $$ \Omega = s_1, s_2, s_1, s_2, s_1, s_2 ... $$
   * $$ \Omega \vdash p $$
   * $$ \Omega \vdash \lnot q $$
 * _**Operadores temporales**_
-  * $$ \Omega \vdash \circ q $$
-  * $$ \Omega \vdash \square (p \lor q) $$ 
+  * "Siguiente": $$ \Omega \vdash \circ q $$
+  * "Siempre": $$ \Omega \vdash \square (p \lor q) $$ 
   * ...
 :::
 
@@ -224,29 +351,82 @@ la misma debe ser cierta solo en el primer estado del camino.
 :::::
 ::::::
 
-## LTL: Ejemplos (III)
+## LTL: Ejemplos (2)
 
 Otro ejemplo (**finito**):
 
-$$ \Gamma = s_1, s_2, s_1, s_2, s_3 $$
 
 :::::: {.columns}
 ::::: {.column width="50%"}
 ![](../img/ejemplo_kripke.png)
+$$ \Gamma = s_1, s_2, s_1, s_2, s_3 $$
 :::::
 ::::: {.column width="50%"}
 
 $\Gamma$ satisface las mismas propiedades que antes, pero también:
 
-* $$ \Gamma \vdash \lozenge (p \land q) $$
+* "Eventualmente": $$ \Gamma \vdash \lozenge (p \land q) $$
 
 :::::
 ::::::
 
+## Observaciones
+
+Todas las propiedades de liveness se pueden expresar usando fórmulas LTL
+
+. . .
+
+Cuando queremos probar liveness para un modelo de Event-B, nos interesa que **todas** las
+trazas de una máquina cumplan con una propiedad de liveness.
+
+. . .
+
+Si una propiedad de liveness no se cumple, siempre debe existir una traza
+que sirva de contraejemplo.
+
+::: notes
+
+Esto último también es cierto para propiedades de safety. La diferencia es que
+en las propiedades de safety, el contraejemplo es siempre finito y puede ser
+simplemente un prefijo de la traza de ejecución completa.
+
+:::
 
 # Propiedades de Liveness (en LTL)
 
-## Existencia de $P$ (Definición)
+## Intro al modelo PingPong
+
+Ahora que conocemos lo necesario de LTL, podemos ver algunas propiedades
+de liveness y como se expresan lógicamente.
+
+. . .
+
+Usaremos como ejemplo el modelo `PingPong`
+
+* * *
+
+![Modelo Ping Pong - Máquina de estados](../img/pingpong_automata.png)
+
+::: notes
+
+Es un modelo artificial que nos sirve para estudiar algunas propiedades
+interesantes.
+
+Es un sistema que oscila y que nunca termina.
+
+:::
+
+* * *
+
+(Mostrar modelo en Rodin)
+
+::: notes
+
+Explicar cuales son las variables del modelo y cuales son los eventos.
+
+:::
+
+## Existencia de $P$ (definición)
 
 
 "_**Siempre** es cierto que, **eventualmente** P es verdadero_"
@@ -257,18 +437,53 @@ En LTL:
 
 $\square \lozenge P$
 
-## Existencia de $P$ (Demostración)
+## Existencia de $P$ (ejemplos)
 
-Por medio de dos propiedades auxiliares:
+:::::: {.columns}
+:::: {.column width="50%"}
+![](../img/pingpong_automata.png)
+::::
+:::: {.column width="50%"}
+
+Ejemplos:
+
+* $\square \lozenge (is\_pinging = 0)$
+* $\square \lozenge (is\_pinging = 1)$
+
+Estas propiedades nos dicen que algunos estados están garantizados que van
+a ocurrir, independientemente de la traza particular.
+
+Pueden ser útiles para demostrar la disponibilidad de un servicio:
+
+> "Siempre es cierto que, eventualmente, el sistema está listo para recibir nuevas solicitudes"
+
+::::
+::::::
+
+
+## Existencia de $P$ (demostración)
+
+Por medio de dos propiedades auxiliares [^2]:
 
 1. **Convergencia en $\lnot P$**
 2. **$\lnot P$ es libre de deadlocks**
 
 . . .
 
-![](../img/son_hoang_2014_existence_proof_rule.png)
+![Existencia - Regla de inferencia](../img/son_hoang_2014_existence_proof_rule.png)
 
-## Persistencia de $P$ (Definición)
+. . .
+
+Intuición:
+
+1. $\lnot P$ debe transicionar a otro estado eventualmente, sino $P$ sería imposible.
+2. $\lnot P$ debe ser deadlock-free, o de otra forma sería imposible que $P$ sea cierto.
+
+* * *
+
+(Mostrar demostracion en Rodin)
+
+## Persistencia de $P$ (definición)
 
 
 "_**Eventualmente** es cierto que, **siempre** P es verdadero_"
@@ -279,16 +494,66 @@ En LTL:
 
 $\lozenge \square P$
 
-## Persistencia de $P$ (Demostración)
+## Persistencia de $P$ (demostración)
 
-Por medio de dos propiedades auxiliares:
+Por medio de dos propiedades auxiliares [^2]:
 
 1. **Divergencia en $P$**
 2. **$\lnot P$ es libre de deadlocks**
 
 . . .
 
-![](../img/son_hoang_2014_persistence_proof_rule.png)
+![Persistencia - Regla de inferencia](../img/son_hoang_2014_persistence_proof_rule.png)
+
+. . .
+
+Intuición:
+
+1. Para que $P$ sea persistente, debe ser cierto que $P$ lleva a $P$ siempre.
+2. $P$ debe ser libre de deadlocks, o de otra forma no puede llevar a sí mismo.
+
+## Persistencia de $P$ (ejemplo)
+
+El modelo PingPong original no tiene persistencia de ningún tipo (oscila siempre entre
+los estados Ping y Pong).
+
+* * *
+
+Pero un modelo con un estado final *sí* tiene persistencia. Este es `PingPongEnd`.
+
+![Modelo PingPongEnd - Máquina de estados](../img/pingpongend_automata.png)
+
+* * *
+
+Ejemplo de traza (generada con ProB):
+
+![Modelo PingPongEnd - Traza de ejemplo](../img/streak2runs2trace.png)
+
+* * *
+
+:::::: {.columns}
+:::: {.column width="50%"}
+![](../img/pingpongend_automata.png)
+::::
+:::: {.column width="50%"}
+
+Ejemplos ($RUN\_LIMIT = 2$):
+
+* $\lozenge \square (runs\_counter = RUN\_LIMIT)$
+
+Estas propiedades nos dicen que algunos estados están garantizados que van
+a ocurrir, independientemente de la traza particular.
+
+Pueden ser útiles para demostrar la disponibilidad de un servicio:
+
+> "Siempre es cierto que, eventualmente, el sistema está listo para recibir nuevas solicitudes"
+
+::::
+::::::
+
+* * *
+
+(Mostrar en Rodin)
 
 ## Progreso de $P_1$ a $P_2$ (Definición)
 
@@ -312,6 +577,12 @@ Por medio de varias propiedades auxiliares (no tan simples).
 ![](../img/son_hoang_2014_until_proof_rule.png)
 ::::
 ::::::
+
+. . .
+
+(Omitimos explicación - consultar [^2])
+
+. . .
 
 # Propiedades auxiliares
 
@@ -388,6 +659,8 @@ Hay dos casos donde el model check no es exhaustivo:
 Ambos se pueden remediar aumentando los valores de las constantes `MAX_INITIALIZATIONS`
 y `MAX_OPERATIONS` y **acotando las constantes del modelo** (fundamental).
 
+![ProB - Opciones de animación](../img/screenshot_prob_animation_settings.png)
+
 ## "Model check" (III)
 
 El _model checking_ nos permite **sólo verificar**, no demostrar.
@@ -414,3 +687,11 @@ G (e(ping) => F (e(pong)))
 ```
 
 Donde `e(<evento>)` es la _guarda del evento en cuestión_ (i.e: el evento está activado).
+
+# Bibliografía
+
+## Bibliografía
+
+[^1]: B. Alpern y F. B. Schneider, «Defining liveness», Information Processing Letters, vol. 21, n.º 4, pp. 181-185, oct. 1985, doi: 10.1016/0020-0190(85)90056-0.
+[^2]: T. S. Hoang y J.-R. Abrial, «Reasoning about Liveness Properties in Event-B», en Formal Methods and Software Engineering, vol. 6991, S. Qin y Z. Qiu, Eds., en Lecture Notes in Computer Science, vol. 6991. , Berlin, Heidelberg: Springer Berlin Heidelberg, 2011, pp. 456-471. doi: 10.1007/978-3-642-24559-6_31.
+

@@ -43,7 +43,7 @@
 <section id="title-slide">
   <h1 class="title">Modelando propiedades de liveness en Event-B</h1>
   <p class="author">Ramiro Garay</p>
-  <p class="date">Agosto, 2025</p>
+  <p class="date">Octubre, 2025</p>
 </section>
 
 <section>
@@ -74,23 +74,10 @@ consultora especializada en Blockchain (2022-)</li>
 </section>
 <section id="agenda" class="slide level2">
 <h2>Agenda</h2>
-<aside class="notes">
-<p>Objetivos: 1. Aprender que son las props de liveness y por qué
-importan 2. Como formalizar esto en una lenguaje formal (LTL)) 3. como
-formalizar propiedades de liveness en Event-B (que es mas que nada
-safety) 3.1. Que se puede demostrar facilmente? Convergencia. 3.2. Como
-demostrar cosas mas complejas (existencia, persistencia, etc). 3.3.
-Desventajas y ventajas de utilizar SOLO event-b para liveness. 3.4.
-Posibles soluciones (Meta-theory para hablar de trazas) 4. Intro a model
-checking y verificacion de propiedades LTL con ProB 4.1 4.1. Espacio de
-estados 4.2. Checkeos exhaustivos vs. no exhaustivos 5. Bibliografía</p>
-<p>Ejemplo: PingPong?</p>
-</aside>
 <ol type="1">
-<li class="fragment">Intro. propiedades de liveness</li>
-<li class="fragment"><em>Lógica Temporal Lineal (LTL)</em></li>
-<li class="fragment"><strong>Demostración</strong> de propiedades de
-liveness (sólo existencia)</li>
+<li class="fragment">Introducción a propiedades de liveness</li>
+<li class="fragment">Introducción al modelo <code>PingPong</code></li>
+<li class="fragment">Formalizacion de una propiedad de liveness</li>
 <li class="fragment"><strong>Verificación</strong> de propiedades de
 liveness usando <em>model checking</em></li>
 </ol>
@@ -195,14 +182,94 @@ satisfecha eventualmente</li>
 </ol>
 </section></section>
 <section>
-<section id="un-poco-de-ltl" class="title-slide slide level1">
-<h1>Un poco de LTL</h1>
+<section id="introducción-al-modelo-pingpong"
+class="title-slide slide level1">
+<h1>Introducción al modelo <code>PingPong</code></h1>
 
 </section>
-<section id="hacia-una-definición-formal" class="slide level2">
-<h2>Hacia una definición formal</h2>
-<p>Para definir formalmente propiedades de liveness es necesario hablar
-de <em>tiempo</em>.</p>
+<section id="introducción" class="slide level2">
+<h2>Introducción</h2>
+<p>Ahora introducimos un modelo pequeño y sencillo para identificar
+algunas propiedades de liveness y luego estudiarlas.</p>
+<div class="fragment">
+<p>Este modelo oscila entre sólo dos estados, como en un partido de
+ping-pong, de ahí su nombre.</p>
+</div>
+</section>
+<section class="slide level2">
+
+<p><img data-src="../img/pingpong1_automata.png" /></p>
+</section>
+<section class="slide level2">
+
+<div class="columns">
+<div class="column" style="width:60%;">
+<p><img data-src="../img/pingpong1_automata.png" /></p>
+</div><div class="column" style="width:40%;">
+<p>Algunas propiedades del modelo</p>
+<ol type="1">
+<li class="fragment">Su ejecución no termina en ningún momento</li>
+<li class="fragment">Su estado inicial es <code>ponging</code></li>
+<li class="fragment">Está parametrizado por la constante
+<code>LIMIT</code></li>
+<li class="fragment">El modelo hace <code>ping</code> (o
+<code>pong</code>) <code>LIMIT</code> veces y luego alterna.
+<ul>
+<li class="fragment">(esto último se hace por medio de guardas y
+variables)</li>
+</ul></li>
+</ol>
+</div>
+</div>
+</section>
+<section id="especificación-en-event-b-variables" class="slide level2">
+<h2>Especificación en Event-B (variables)</h2>
+<p><img data-src="../img/pingpong2_automata.png" /></p>
+</section>
+<section id="especificación-en-event-b-pre--y-post-condiciones"
+class="slide level2">
+<h2>Especificación en Event-B (pre- y post-condiciones)</h2>
+<p><img data-src="../img/pingpong_eventos.png" /></p>
+</section>
+<section id="identificamos-una-propiedad-de-liveness"
+class="slide level2">
+<h2>Identificamos una propiedad de liveness</h2>
+<p>Ahora que entendemos el modelo en detalle, observamos una propiedad
+interesante:</p>
+<blockquote>
+<p>“<strong>Siempre</strong> ocurre que, <strong>eventualmente</strong>,
+el modelo se encuentra en el estado <code>pinging</code>”</p>
+</blockquote>
+<div class="fragment">
+<p>Intuitivamente, esto es cierto porque el modelo
+<strong>siempre</strong> oscila entre dos estados, de los cuales uno es
+el estado <code>pinging</code>.</p>
+</div>
+<div class="fragment">
+<p>Esta es una propiedad de <em>existencia</em>. Las siguientes
+preguntas son:</p>
+<ol type="1">
+<li class="fragment">¿cómo formalizamos esta propiedad?</li>
+<li class="fragment">¿cómo <strong>demostramos</strong> esta propiedad
+para nuestro modelo? (spoiler: con esfuerzo!)</li>
+<li class="fragment">¿cómo <strong>verificamos</strong> esta
+propiedad?</li>
+</ol>
+</div>
+</section></section>
+<section>
+<section id="hacia-una-definición-formal-de-existencia"
+class="title-slide slide level1">
+<h1>Hacia una definición formal de existencia</h1>
+
+</section>
+<section id="introducción-a-ltl" class="slide level2">
+<h2>Introducción a LTL</h2>
+<p>Para definir formalmente una propiedad de liveness es necesario
+hablar de <em>tiempo</em>.</p>
+<div class="fragment">
+<p>Para este fin usamos lógica formal.</p>
+</div>
 <div class="fragment">
 <p>La Lógica Temporal Lineal (LTL) es una extensión de la <em>lógica de
 1er orden</em> que incluye <strong>operadores temporales</strong>.</p>
@@ -213,15 +280,15 @@ etc.) y variables lógicas que pueden ser TRUE o FALSE.</p>
 </aside>
 </div>
 <div class="fragment">
-<p>Los operadores temporales de LTL nos permite expresar cosas como
+<p>Los operadores temporales de LTL nos permiten expresar cosas como
 <strong>siempre</strong>, <strong>después</strong>,
 <strong>eventualmente</strong>, etc.</p>
 </div>
 </section>
-<section id="hacia-una-definición-formal-1" class="slide level2">
-<h2>Hacia una definición formal</h2>
-<p>Al igual que la lógica de 1er orden, LTL se puede analizar desde dos
-puntos de vista:</p>
+<section class="slide level2">
+
+<p>Al igual que la lógica de 1er orden, la LTL se puede analizar desde
+dos puntos de vista:</p>
 <div class="fragment">
 <ol type="1">
 <li class="fragment">La <em>sintaxis</em> (cómo se construyen las
@@ -238,197 +305,150 @@ satisfecha por una <em>asignación</em> de variables particular.</p>
 </aside>
 </div>
 </section>
-<section id="estructura-de-kripke" class="slide level2">
-<h2>Estructura de Kripke</h2>
+<section id="estructura-de-kripke-del-modelo-pingpong"
+class="slide level2">
+<h2>Estructura de Kripke del modelo PingPong</h2>
 <p>La semántica de LTL requiere de una estructura auxiliar llamada
 <strong>estructura de Kripke</strong>.</p>
-<div class="columns">
-<div class="column" style="width:50%;">
-<figure>
-<img data-src="../img/ejemplo_automata.png" alt="Máquina de estados" />
-<figcaption aria-hidden="true">Máquina de estados</figcaption>
-</figure>
-</div><div class="column" style="width:50%;">
-<figure>
-<img data-src="../img/ejemplo_kripke.png" alt="Estructura de Kripke" />
-<figcaption aria-hidden="true">Estructura de Kripke</figcaption>
-</figure>
+<div class="fragment">
+<p>La estructura de Kripke se obtiene de agregar fórmulas lógicas a una
+máquina de estado.</p>
 </div>
+<div class="fragment">
+<p>Veamos una estructura de Kripke para el modelo
+<code>PingPong</code>.</p>
 </div>
-<p>⇒ Donde <span class="math inline"><em>p</em>(<em>s</em>)</span> y
-<span class="math inline"><em>q</em>(<em>s</em>)</span> son predicados
-definidos sobre el estado de la máquina</p>
+</section>
+<section class="slide level2">
+
+<p><img data-src="../img/pingpong3_automata.png" /></p>
+<p>⇒ Definimos un conjunto de proposiciones y en base a <em>ellas</em>
+definimos los estados de la máquina.</p>
 <aside class="notes">
 <p>Una estructura de Kripke es una máquina de estados enriquecida con
 proposiciones lógicas (de 1er orden!).</p>
 <p>En cada estado de la máquina tenemos en rojo <em>cuáles</em>
 proposiciones son verdaderas.</p>
-<p>Nótese que esta máquina de estados puede modelarse en Event-B
-fácilmente (¿cómo?)</p>
 </aside>
 </section>
 <section id="traza-de-una-máquina" class="slide level2">
 <h2>Traza de una máquina</h2>
-<p>Una máquina de estados tiene asociada un conjunto de
-<strong>trazas</strong>.</p>
-<p>Una traza es una sucesión (posiblemente infinita!) de estados. Estos
-se obtienen de ejecutar la máquina <strong>respetando las
-restricciones</strong>.</p>
+<p>Con la estructura de Kripke, podemos empezar a analizar si ciertas
+fórmulas LTL son verdaderas o no.</p>
 <div class="fragment">
+<p>Se dice que una fórmula es válida si <strong>todas</strong> las
+<em>trazas</em> de la estructura de Kripke satisfacen la fórmula.</p>
+</div>
+<div class="fragment">
+<p>⇒ Una traza es una sucesión (posiblemente infinita!) de estados.
+Estos se obtienen de ejecutar la máquina <strong>respetando las
+restricciones</strong>.</p>
+</div>
+</section>
+<section id="traza-del-modelo-pingpong-limit-2" class="slide level2">
+<h2>Traza del modelo PingPong (<code>LIMIT = 2</code>)</h2>
 <div class="columns">
-<div class="column" style="width:50%;">
-<figure>
-<img data-src="../img/ejemplo_automata.png" alt="Máquina de estados" />
-<figcaption aria-hidden="true">Máquina de estados</figcaption>
-</figure>
-</div><div class="column" style="width:50%;">
+<div class="column" style="width:80%;">
+<p><img data-src="../img/pingpong3_automata.png" /></p>
+</div><div class="column" style="width:60%;">
+<p>Para cada valor de <code>LIMIT</code>, el modelo PingPong tiene una
+única traza posible. Por ejemplo:</p>
 <ul>
 <li class="fragment"><span
-class="math inline"><em>Ω</em> = <em>s</em><sub>1</sub>, <em>s</em><sub>2</sub>, <em>s</em><sub>1</sub>, <em>s</em><sub>2</sub>, <em>s</em><sub>1</sub>, <em>s</em><sub>2</sub>...</span></li>
-<li class="fragment"><span
-class="math inline"><em>Γ</em> = <em>s</em><sub>1</sub>, <em>s</em><sub>2</sub>, <em>s</em><sub>1</sub>, <em>s</em><sub>2</sub>, <em>s</em><sub>3</sub></span></li>
+class="math inline"><em>Ω</em> = <em>s</em><sub>2</sub>, <em>s</em><sub>1</sub>, <em>s</em><sub>1</sub>, <em>s</em><sub>2</sub>, <em>s</em><sub>2</sub>, <em>s</em><sub>1</sub>, ...</span></li>
 </ul>
+<p>Asociado a cada estado de la traza, se encuentra el conjunto de
+proposiciones que son verdaderas para ese estado:</p>
+<ul>
+<li class="fragment"><span
+class="math inline"><em>w</em> = {¬<em>p</em>, <em>l</em>}, {<em>p</em>, <em>m</em>}, {<em>p</em>, <em>h</em>}, {¬<em>p</em>, <em>m</em>}, ...</span></li>
+</ul>
+<p>(Esta sucesión se llama <em>palabra</em>)</p>
 </div>
 </div>
+</section>
+<section id="formulando-existencia" class="slide level2">
+<h2>Formulando existencia</h2>
+<p>Para formular nuestra propiedad de existencia, necesitamos dos
+operadores temporales.</p>
+<ol type="1">
+<li class="fragment">Siempre (<span class="math inline">▫</span>)</li>
+<li class="fragment">Eventualmente (<span
+class="math inline">◊</span>)</li>
+</ol>
+<div class="fragment">
+<p>Con estos dos, podemos formular la propiedad que deseamos:</p>
+<blockquote>
+<p>“<strong>Siempre</strong> ocurre que, <strong>eventualmente</strong>,
+el modelo se encuentra en el estado <code>pinging</code>”</p>
+</blockquote>
+</div>
+<div class="fragment">
+<p>En LTL:</p>
+<p><span class="math display">▫(◊<em>p</em>)</span></p>
+</div>
+</section>
+<section id="verificando-la-válidez-de-la-fórmula-a-mano"
+class="slide level2">
+<h2>Verificando la válidez de la fórmula (a mano)</h2>
+<p>Anteriormente calculamos la traza para <code>LIMIT = 2</code>:</p>
+<ul>
+<li><span
+class="math inline"><em>Ω</em> = <em>s</em><sub>2</sub>, <em>s</em><sub>1</sub>, <em>s</em><sub>1</sub>, <em>s</em><sub>2</sub>, <em>s</em><sub>2</sub>, <em>s</em><sub>1</sub>, ...</span></li>
+</ul>
+<p>y su correpondiente palabra:</p>
+<ul>
+<li><span
+class="math inline"><em>w</em> = {¬<em>p</em>, <em>l</em>}, {<em>p</em>, <em>m</em>}, {<em>p</em>, <em>h</em>}, {¬<em>p</em>, <em>m</em>}, ...</span></li>
+</ul>
+<div class="fragment">
+<p>¿Cómo podemos validar que la traza satisface la fórmula:</p>
+<p><span class="math display">▫(◊<em>p</em>)</span></p>
+<p>?</p>
+</div>
+<div class="fragment">
+<p>Porque:</p>
+<ol type="1">
+<li><span class="math inline">▫<em>p</em></span>: se satisface si
+<em>p</em> es satisfecho por todas las <em>subtrazas</em>.</li>
+<li><span class="math inline">◊<em>p</em></span>: se satisface si
+<em>p</em> es satisfecho por alguna <em>subtraza</em>.</li>
+<li><span class="math inline"><em>p</em></span>: se satisface si el
+primer elemento de la traza satisface <em>p</em></li>
+</ol>
 </div>
 </section>
 <section class="slide level2">
 
-<p>¿Qué restricciones? En Event-B:</p>
-<ol type="1">
-<li>Invariantes del modelo</li>
-<li>Pre- y post-condiciones de cada evento</li>
-</ol>
-<div class="columns">
-<div class="column" style="width:50%;">
-<figure>
-<img data-src="../img/pingpong_invariantes.png" alt="Invariantes" />
-<figcaption aria-hidden="true">Invariantes</figcaption>
-</figure>
-</div><div class="column" style="width:50%;">
-<figure>
-<img data-src="../img/pingpong_guarda.png"
-alt="Pre- y post-condiciones" />
-<figcaption aria-hidden="true">Pre- y post-condiciones</figcaption>
-</figure>
-</div>
-</div>
-<aside class="notes">
-<p>¿Qué restricciones? Todas las que queramos. En el caso de Event-B:
-las invariantes que definamos, las pre-condiciones y post-condiciones de
-las transiciones, teoremas, etc.</p>
-</aside>
+<p><img data-src="../img/traza1.png" /></p>
 </section>
-<section id="traza-de-una-máquina-1" class="slide level2">
-<h2>Traza de una máquina</h2>
-<p>Por lo tanto, la estructura de Kripke también tiene una traza.</p>
-<div class="columns">
-<div class="column" style="width:50%;">
-<figure>
-<img data-src="../img/ejemplo_kripke.png" alt="Estructura de Kripke" />
-<figcaption aria-hidden="true">Estructura de Kripke</figcaption>
-</figure>
-</div><div class="column" style="width:50%;">
+<section class="slide level2">
+
+<p><img data-src="../img/traza2.png" /></p>
+</section>
+<section class="slide level2">
+
+<p><img data-src="../img/traza3.png" /></p>
+</section>
+<section id="otras-fórmulas" class="slide level2">
+<h2>Otras fórmulas</h2>
+<p>El modelo también satisface otras fórmulas LTL:</p>
 <ul>
-<li class="fragment">Pero además podemos hablar de <strong>cómo las
-proposiciones de nuestra estructura cambian con el tiempo.</strong></li>
-<li class="fragment">Trazas:
-<ul>
-<li class="fragment"><span
-class="math inline"><em>Ω</em> = <em>s</em><sub>1</sub>, <em>s</em><sub>2</sub>, <em>s</em><sub>1</sub>, <em>s</em><sub>2</sub>, <em>s</em><sub>1</sub>, <em>s</em><sub>2</sub>...</span></li>
-<li class="fragment"><span
-class="math inline"><em>Γ</em> = <em>s</em><sub>1</sub>, <em>s</em><sub>2</sub>, <em>s</em><sub>1</sub>, <em>s</em><sub>2</sub>, <em>s</em><sub>3</sub></span></li>
-</ul></li>
-<li class="fragment">“Palabras”:
-<ul>
-<li class="fragment"><span
-class="math inline"><em>w</em><sub>1</sub> = {<em>p</em>}, {<em>q</em>}, {<em>p</em>}, {<em>q</em>}, {<em>p</em>}, {<em>q</em>}...</span></li>
-<li class="fragment"><span
-class="math inline"><em>w</em><sub>2</sub> = {<em>p</em>}, {<em>q</em>}, {<em>p</em>}, {<em>q</em>}, {<em>p</em>, <em>q</em>}</span></li>
-</ul></li>
-<li class="fragment">Esto es muy <strong>potente</strong>.</li>
+<li><span class="math inline">▫(<em>l</em> ⟹ ◊<em>h</em>)</span>
+(progreso de <em>l</em> a <em>h</em>)</li>
+<li><span class="math inline">▫(<em>h</em> ⟹ ◊<em>l</em>)</span>
+(progreso de <em>h</em> a <em>l</em>)</li>
 </ul>
-</div>
-</div>
-</section>
-<section id="fórmulas-lógicas-y-su-semántica" class="slide level2">
-<h2>Fórmulas lógicas y su semántica</h2>
-<p>Ahora que conocemos las estructuras de Kripke, podemos ver cómo se
-definen fórmulas LTL en base a ellas.</p>
-<div class="fragment">
-<p>Lo haremos por medio de ejemplos</p>
-</div>
-</section>
-<section id="ltl-ejemplos-1" class="slide level2">
-<h2>LTL: Ejemplos (1)</h2>
-<p>La traza de una estructura de Kripke pueden satisfacer o no
-<strong>una fórmula LTL</strong> <span
-class="math display">(<em>Ω</em> ⊢ <em>ϕ</em>)</span></p>
-<div class="fragment">
-<p>Empezamos con la traza:</p>
-<p><span
-class="math display"><em>Ω</em> = <em>s</em><sub>1</sub>, <em>s</em><sub>2</sub>, <em>s</em><sub>1</sub>, <em>s</em><sub>2</sub>, <em>s</em><sub>1</sub>, <em>s</em><sub>2</sub>...</span></p>
-</div>
-</section>
-<section id="ltl-ejemplos-1-1" class="slide level2">
-<h2>LTL: Ejemplos (1)</h2>
-<div class="columns">
-<div class="column" style="width:50%;">
-<p><img data-src="../img/ejemplo_kripke.png" /> <span
-class="math display"><em>Ω</em> = <em>s</em><sub>1</sub>, <em>s</em><sub>2</sub>, <em>s</em><sub>1</sub>, <em>s</em><sub>2</sub>, <em>s</em><sub>1</sub>, <em>s</em><sub>2</sub>...</span></p>
-</div><div class="column" style="width:50%;">
+<p>Si incluimos un estado final (modelo PingPongEnd).</p>
 <ul>
-<li class="fragment"><em>Variables lógicas / proposiciones con
-conectivas lógicas</em>
-<ul>
-<li class="fragment"><span
-class="math display"><em>Ω</em> ⊢ <em>p</em></span></li>
-<li class="fragment"><span
-class="math display"><em>Ω</em> ⊢ ¬<em>q</em></span></li>
-</ul></li>
-<li class="fragment"><em><strong>Operadores temporales</strong></em>
-<ul>
-<li class="fragment">“Siguiente”: <span
-class="math display"><em>Ω</em> ⊢ ∘<em>q</em></span></li>
-<li class="fragment">“Siempre”: <span
-class="math display"><em>Ω</em> ⊢ ▫(<em>p</em> ∨ <em>q</em>)</span></li>
-<li class="fragment">…</li>
-</ul></li>
+<li><span class="math inline">◊(▫<em>f</em>))</span> (persistencia)</li>
 </ul>
-<aside class="notes">
-<p>Aclarar que cualquier fórmula lógica puede ir a la derecha. Sin
-operadores temporales, la misma debe ser cierta solo en el primer estado
-del camino.</p>
-</aside>
-</div>
-</div>
-</section>
-<section id="ltl-ejemplos-2" class="slide level2">
-<h2>LTL: Ejemplos (2)</h2>
-<p>Otro ejemplo (<strong>finito</strong>):</p>
-<div class="columns">
-<div class="column" style="width:50%;">
-<p><img data-src="../img/ejemplo_kripke.png" /> <span
-class="math display"><em>Γ</em> = <em>s</em><sub>1</sub>, <em>s</em><sub>2</sub>, <em>s</em><sub>1</sub>, <em>s</em><sub>2</sub>, <em>s</em><sub>3</sub></span></p>
-</div><div class="column" style="width:50%;">
-<p><span class="math inline"><em>Γ</em></span> satisface las mismas
-propiedades que antes, pero también:</p>
-<ul>
-<li>“Eventualmente”: <span
-class="math display"><em>Γ</em> ⊢ ◊(<em>p</em> ∧ <em>q</em>)</span></li>
-</ul>
-</div>
-</div>
+<p>Pero no nos detendremos analizarlas.</p>
 </section>
 <section id="observaciones" class="slide level2">
 <h2>Observaciones</h2>
 <p>Todas las propiedades de liveness se pueden expresar usando fórmulas
 LTL</p>
-<div class="fragment">
-<p>Cuando queremos probar liveness para un modelo de Event-B, nos
-interesa que <strong>todas</strong> las trazas de una máquina cumplan
-con una propiedad de liveness.</p>
-</div>
 <div class="fragment">
 <p>Si una propiedad de liveness no se cumple, siempre debe existir una
 traza que sirva de contraejemplo.</p>
@@ -441,82 +461,29 @@ ejecución completa.</p>
 </div>
 </section></section>
 <section>
-<section id="propiedades-de-liveness-en-ltl"
+<section id="demostración-de-existencia"
 class="title-slide slide level1">
-<h1>Propiedades de Liveness (en LTL)</h1>
+<h1>Demostración de existencia</h1>
 
 </section>
-<section id="intro-al-modelo-pingpong" class="slide level2">
-<h2>Intro al modelo PingPong</h2>
-<p>Ahora que conocemos lo necesario de LTL, podemos ver algunas
-propiedades de liveness y como se expresan lógicamente.</p>
+<section id="posibilidades-y-limitaciones-de-event-b"
+class="slide level2">
+<h2>Posibilidades y limitaciones de Event-B</h2>
+<p>Es posible demostrar varias propiedades de liveness utilizando
+Event-B <a href="#/fn2" class="footnote-ref" id="fnref2"
+role="doc-noteref"><sup>2</sup></a></p>
 <div class="fragment">
-<p>Usaremos como ejemplo el modelo <code>PingPong</code></p>
-</div>
-</section>
-<section class="slide level2">
-
-<figure>
-<img data-src="../img/pingpong_automata.png"
-alt="Modelo Ping Pong - Máquina de estados" />
-<figcaption aria-hidden="true">Modelo Ping Pong - Máquina de
-estados</figcaption>
-</figure>
-<aside class="notes">
-<p>Es un modelo artificial que nos sirve para estudiar algunas
-propiedades interesantes.</p>
-<p>Es un sistema que oscila y que nunca termina.</p>
-</aside>
-</section>
-<section class="slide level2">
-
-<p>(Mostrar modelo en Rodin)</p>
-<aside class="notes">
-<p>Explicar cuales son las variables del modelo y cuales son los
-eventos.</p>
-</aside>
-</section>
-<section id="existencia-de-p-definición" class="slide level2">
-<h2>Existencia de <span class="math inline"><em>P</em></span>
-(definición)</h2>
-<p>“<em><strong>Siempre</strong> es cierto que,
-<strong>eventualmente</strong> P es verdadero</em>”</p>
-<div class="fragment">
-<p>En LTL:</p>
-<p><span class="math inline">▫◊<em>P</em></span></p>
-</div>
-</section>
-<section id="existencia-de-p-ejemplos" class="slide level2">
-<h2>Existencia de <span class="math inline"><em>P</em></span>
-(ejemplos)</h2>
-<div class="columns">
-<div class="column" style="width:50%;">
-<p><img data-src="../img/pingpong_automata.png" /></p>
-</div><div class="column" style="width:50%;">
-<p>Ejemplos:</p>
-<ul>
-<li><span
-class="math inline">▫◊(<em>i</em><em>s</em>_<em>p</em><em>i</em><em>n</em><em>g</em><em>i</em><em>n</em><em>g</em> = 0)</span></li>
-<li><span
-class="math inline">▫◊(<em>i</em><em>s</em>_<em>p</em><em>i</em><em>n</em><em>g</em><em>i</em><em>n</em><em>g</em> = 1)</span></li>
-</ul>
-<p>Estas propiedades nos dicen que algunos estados están garantizados
-que van a ocurrir, independientemente de la traza particular.</p>
-<p>Pueden ser útiles para demostrar la disponibilidad de un
-servicio:</p>
-<blockquote>
-<p>“Siempre es cierto que, eventualmente, el sistema está listo para
-recibir nuevas solicitudes”</p>
-</blockquote>
-</div>
+<p>Sin embargo, esto se debe hacer por medio de <em>lemas
+auxiliares</em>. No se puede hablar directamente de las trazas de una
+máquina, lo cual complica mucho su expresión.</p>
 </div>
 </section>
 <section id="existencia-de-p-demostración" class="slide level2">
 <h2>Existencia de <span class="math inline"><em>P</em></span>
 (demostración)</h2>
-<p>Por medio de dos propiedades auxiliares <a href="#/fn2"
-class="footnote-ref" id="fnref2"
-role="doc-noteref"><sup>2</sup></a>:</p>
+<p>Por medio de dos propiedades auxiliares <a href="#/fn3"
+class="footnote-ref" id="fnref3"
+role="doc-noteref"><sup>3</sup></a>:</p>
 <ol type="1">
 <li><strong>Convergencia en <span
 class="math inline">¬<em>P</em></span></strong></li>
@@ -545,202 +512,26 @@ class="math inline"><em>P</em></span> sea cierto.</li>
 </section>
 <section class="slide level2">
 
-<p>(Mostrar demostracion en Rodin)</p>
-</section>
-<section id="persistencia-de-p-definición" class="slide level2">
-<h2>Persistencia de <span class="math inline"><em>P</em></span>
-(definición)</h2>
-<p>“<em><strong>Eventualmente</strong> es cierto que,
-<strong>siempre</strong> P es verdadero</em>”</p>
-<div class="fragment">
-<p>En LTL:</p>
-<p><span class="math inline">◊▫<em>P</em></span></p>
-</div>
-</section>
-<section id="persistencia-de-p-demostración" class="slide level2">
-<h2>Persistencia de <span class="math inline"><em>P</em></span>
-(demostración)</h2>
-<p>Por medio de dos propiedades auxiliares <a href="#/fn3"
-class="footnote-ref" id="fnref3"
-role="doc-noteref"><sup>3</sup></a>:</p>
-<ol type="1">
-<li><strong>Divergencia en <span
-class="math inline"><em>P</em></span></strong></li>
-<li><strong><span class="math inline">¬<em>P</em></span> es libre de
-deadlocks</strong></li>
-</ol>
-<div class="fragment">
-<figure>
-<img data-src="../img/son_hoang_2014_persistence_proof_rule.png"
-alt="Persistencia - Regla de inferencia" />
-<figcaption aria-hidden="true">Persistencia - Regla de
-inferencia</figcaption>
-</figure>
-</div>
-<div class="fragment">
-<p>Intuición:</p>
-<ol type="1">
-<li>Para que <span class="math inline"><em>P</em></span> sea
-persistente, debe ser cierto que <span
-class="math inline"><em>P</em></span> lleva a <span
-class="math inline"><em>P</em></span> siempre.</li>
-<li><span class="math inline"><em>P</em></span> debe ser libre de
-deadlocks, o de otra forma no puede llevar a sí mismo.</li>
-</ol>
-</div>
-</section>
-<section id="persistencia-de-p-ejemplo" class="slide level2">
-<h2>Persistencia de <span class="math inline"><em>P</em></span>
-(ejemplo)</h2>
-<p>El modelo PingPong original no tiene persistencia de ningún tipo
-(oscila siempre entre los estados Ping y Pong).</p>
-</section>
-<section class="slide level2">
-
-<p>Pero un modelo con un estado final <em>sí</em> tiene persistencia.
-Este es <code>PingPongEnd</code>.</p>
-<figure>
-<img data-src="../img/pingpongend_automata.png"
-alt="Modelo PingPongEnd - Máquina de estados" />
-<figcaption aria-hidden="true">Modelo PingPongEnd - Máquina de
-estados</figcaption>
-</figure>
-</section>
-<section class="slide level2">
-
-<p>Ejemplo de traza (generada con ProB):</p>
-<figure>
-<img data-src="../img/streak2runs2trace.png"
-alt="Modelo PingPongEnd - Traza de ejemplo" />
-<figcaption aria-hidden="true">Modelo PingPongEnd - Traza de
-ejemplo</figcaption>
-</figure>
-</section>
-<section class="slide level2">
-
-<div class="columns">
-<div class="column" style="width:50%;">
-<p><img data-src="../img/pingpongend_automata.png" /></p>
-</div><div class="column" style="width:50%;">
-<p>Ejemplos (<span
-class="math inline"><em>R</em><em>U</em><em>N</em>_<em>L</em><em>I</em><em>M</em><em>I</em><em>T</em> = 2</span>):</p>
-<ul>
-<li><span
-class="math inline">◊▫(<em>r</em><em>u</em><em>n</em><em>s</em>_<em>c</em><em>o</em><em>u</em><em>n</em><em>t</em><em>e</em><em>r</em> = <em>R</em><em>U</em><em>N</em>_<em>L</em><em>I</em><em>M</em><em>I</em><em>T</em>)</span></li>
-</ul>
-<p>Estas propiedades nos dicen que algunos estados están garantizados
-que van a ocurrir, independientemente de la traza particular.</p>
-<p>Pueden ser útiles para demostrar la disponibilidad de un
-servicio:</p>
-<blockquote>
-<p>“Siempre es cierto que, eventualmente, el sistema está listo para
-recibir nuevas solicitudes”</p>
-</blockquote>
-</div>
-</div>
-</section>
-<section class="slide level2">
-
-<p>(Mostrar en Rodin)</p>
-</section>
-<section id="progreso-de-p_1-a-p_2-definición" class="slide level2">
-<h2>Progreso de <span class="math inline"><em>P</em><sub>1</sub></span>
-a <span class="math inline"><em>P</em><sub>2</sub></span>
-(Definición)</h2>
-<p>“<em><strong>Siempre</strong> es cierto que, si <span
-class="math inline"><em>P</em><sub>1</sub></span> es verdadero,
-<strong>eventualmente</strong> <span
-class="math inline"><em>P</em><sub>2</sub></span> lo va a ser</em>”</p>
-<div class="fragment">
-<p>En LTL:</p>
-<p><span
-class="math inline">▫(<em>P</em><sub>1</sub> ⟹ ◊<em>P</em><sub>2</sub>)</span></p>
-</div>
-</section>
-<section id="progreso-de-p_1-a-p_2-demostración" class="slide level2">
-<h2>Progreso de <span class="math inline"><em>P</em><sub>1</sub></span>
-a <span class="math inline"><em>P</em><sub>2</sub></span>
-(Demostración)</h2>
-<p>Por medio de varias propiedades auxiliares (no tan simples).</p>
-<div class="columns">
-<div class="column" style="width:50%;">
-<p><img data-src="../img/son_hoang_2014_progress_proof_rule.png" /></p>
-</div><div class="column" style="width:50%;">
-<p><img data-src="../img/son_hoang_2014_until_proof_rule.png" /></p>
-</div>
-</div>
-<div class="fragment">
-<p>(Omitimos explicación - consultar <a href="#/fn4"
-class="footnote-ref" id="fnref4"
-role="doc-noteref"><sup>4</sup></a>)</p>
-</div>
-</section></section>
-<section>
-<section id="propiedades-auxiliares" class="title-slide slide level1">
-<h1>Propiedades auxiliares</h1>
-
-</section>
-<section id="convergencia-de-un-evento-i" class="slide level2">
-<h2>Convergencia de un evento (I)</h2>
-<p>Esta propiedad de liveness <strong>sí</strong> se puede representar
-en el lenguaje de Event-B.</p>
-<p><em>“Si un evento convergente está activado, entonces eventualmente
-va a dejar de estarlo”</em></p>
-<p>Para marcar un evento como convergente, se lo marca con la palabra
-clave <code>convergent</code>.</p>
-<p>Adicionalmente, al modelo se le debe agregar una
-<em>variante</em>.</p>
-</section>
-<section id="convergencia-de-un-evento-ii" class="slide level2">
-<h2>Convergencia de un evento (II)</h2>
-<p>La variante es un número que satisface las siguientes
-condiciones:</p>
-<ol type="1">
-<li>Cuando el evento está activo, <strong>la variante es un número
-natural</strong>.</li>
-<li>Cuando el evento se ejecuta, <strong>la variante
-disminuye</strong>.</li>
-</ol>
-<div class="fragment">
-<p>Intuitivamente, esto implica que cuando la variante deje de ser
-natural, el evento <strong>ya no va a estar activo</strong> (<em>Modus
-tollens</em> en proposición 1).</p>
-</div>
-<div class="fragment">
-<p>Así mísmo, la variantes <strong>debe</strong> dejar de ser natural,
-ya que el evento disminuye la variante con cada ejecución.</p>
-</div>
-</section>
-<section id="convergencia-de-un-evento-iii" class="slide level2">
-<h2>Convergencia de un evento (III)</h2>
-<p>Cuando varios eventos son convergentes, la elección de la variante se
-complica.</p>
-<p>¿Por qué? Porque Event-B permite <strong>solo una variante por
-modelo</strong>.</p>
-<p>La solución para este problema es combinar las variantes de cada
-evento convergente en una única <em>variante lexicográfica</em>.</p>
-<div class="fragment">
-<p>(TODO: mostrar Variante en modelo PingPongEnd)</p>
-</div>
-</section>
-<section id="convergencia-en-p" class="slide level2">
-<h2>Convergencia en P</h2>
-<p>TODO</p>
-</section>
-<section id="divergencia" class="slide level2">
-<h2>Divergencia</h2>
-<p>TODO</p>
-</section>
-<section id="transiciona-de-p_1-a-p_2" class="slide level2">
-<h2>Transiciona de <span
-class="math inline"><em>P</em><sub>1</sub></span> a <span
-class="math inline"><em>P</em><sub>2</sub></span></h2>
-<p>TODO</p>
+<p>La demostración de existencia del estado <code>pinging</code> está
+hecha para el modelo PingPong, pero la omitimos por cuestiones de tiempo
+:) .</p>
 </section></section>
 <section>
 <section id="verificación-en-prob" class="title-slide slide level1">
 <h1>Verificación en ProB</h1>
 
+</section>
+<section id="model-checking-al-rescate" class="slide level2">
+<h2>Model checking al rescate</h2>
+<p>Vimos que es posible verificar propiedades de existencia triviales a
+mano.</p>
+<div class="fragment">
+<p>Y también es posible demostrarlas en Event-B, aunque con bastante
+esfuerzo.</p>
+</div>
+<div class="fragment">
+<p>El model checking nos ayuda a verificar modelos de mayor tamaño</p>
+</div>
 </section>
 <section id="model-check-i" class="slide level2">
 <h2>“Model check” (I)</h2>
@@ -749,7 +540,6 @@ del modelo para encontrar <em>violaciones de invariantes/teoremas</em> y
 <em>deadlocks</em>.</p>
 <p>Es útil para verificar que el modelo cumple con las variantes
 <strong>antes de demostrarlo</strong>.</p>
-<p>(TODO: Mostrar espacio de estados generado por ProB)</p>
 </section>
 <section id="model-check-ii" class="slide level2">
 <h2>“Model check” (II)</h2>
@@ -780,7 +570,7 @@ más pequeño que el “real”.</p>
 <p>Esta funcionalidad nos permite escribir fórmulas LTL que son
 verificadas por ProB.</p>
 <p>ProB soporta todos los operadores temporales e incluso algunos
-operadores específico a B/Event-B que facilitan la escritura de
+operadores específicos a B/Event-B que facilitan la escritura de
 propiedades útiles.</p>
 </section>
 <section id="ltl-checking-ii" class="slide level2">
@@ -821,12 +611,6 @@ Properties in Event-B», en Formal Methods and Software Engineering,
 vol. 6991, S. Qin y Z. Qiu, Eds., en Lecture Notes in Computer Science,
 vol. 6991. , Berlin, Heidelberg: Springer Berlin Heidelberg, 2011,
 pp. 456-471. doi: 10.1007/978-3-642-24559-6_31.<a href="#/fnref3"
-class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn4"><p>T. S. Hoang y J.-R. Abrial, «Reasoning about Liveness
-Properties in Event-B», en Formal Methods and Software Engineering,
-vol. 6991, S. Qin y Z. Qiu, Eds., en Lecture Notes in Computer Science,
-vol. 6991. , Berlin, Heidelberg: Springer Berlin Heidelberg, 2011,
-pp. 456-471. doi: 10.1007/978-3-642-24559-6_31.<a href="#/fnref4"
 class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>

@@ -5,6 +5,6 @@ set -euo pipefail
 FIFO=inotify.fifo
 
 while IFS= read -r _; do
-  make --silent presentations/*
+  make --silent presentations/*.html
   echo "reload"
 done < "${FIFO}"

@@ -22,6 +22,10 @@ $endif$
     .reveal .sourceCode {  /* see #7635 */
       overflow: visible;
     }
+    /* For using incremental without anyone noticing it's a list */
+    .no-bullet {
+      list-style-type: none;
+    }
     $styles.html()$
   </style>
 $if(theme)$
@@ -93,6 +97,9 @@ $endif$
       // Full list of configuration options available at:
       // https://revealjs.com/config/
       Reveal.initialize({
+        width: 1920,
+
+        height: 1200,
         // Display controls in the bottom right corner
         controls: $controls$,
 

@@ -10,6 +10,6 @@ trap 'echo "shutting down..."; jobs -p | xargs -r kill 2>/dev/null || true; rm -
 inotifywait -e modify -m src/ > "${FIFO}" &
 websocketd -port 8097 --devconsole ./call_pandoc.sh &
 
-miniserve site/ -p 8000
+miniserve site/ -p 8096
 
 
